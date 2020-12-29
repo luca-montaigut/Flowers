@@ -50,28 +50,52 @@ input {
   text-align: center;
 }
 
+hr {
+  width: 100%;
+  margin: 1em 0em;
+}
+
+#random {
+  padding: 1em;
+  text-align: center;
+}
+
 footer {
   display: flex;
   position: absolute;
   bottom: 0;
   font-weight: lighter;
-  margin-bottom: 1em;
 }
 
 #lazyrabbit {
   fill: white;
-  height: 7vh;
-  width: 7vw;
-  opacity: 0;
-  transition: ease-in-out 0.25s;
+  height: 10vh;
+  width: 10vw;
+  opacity: 0.3;
+  transform: translateY(7vh);
+  transition: transform 0.35s ease-out;
 }
 
 #lazyrabbit:hover {
+  cursor: pointer;
   opacity: 1;
+  transform: translateY(0vh);
 }
 
 #canvas1 {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+#toast-box {
+  display: none;
+  position: fixed;
+  bottom: 2vh;
+  left: 20vw;
+  padding: 10px;
+  font-size: 2rem;
+  color: white;
+  background-color: blue;
+  border-radius: 2px;
 }
