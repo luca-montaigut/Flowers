@@ -5,6 +5,10 @@ body {
   box-sizing: border-box;
 }
 
+.hidden {
+  display: none;
+}
+
 main {
   position: relative;
   height: 100vh;
@@ -44,7 +48,7 @@ input {
   text-align: right;
 }
 
-#draw {
+input[name="draw"] {
   margin-top: 3em;
   padding: 1em;
   text-align: center;
@@ -55,7 +59,7 @@ hr {
   margin: 1em 0em;
 }
 
-#random {
+input[name="random"] {
   padding: 1em;
   text-align: center;
 }
@@ -89,7 +93,6 @@ footer {
 }
 
 #toast-box {
-  display: none;
   position: fixed;
   bottom: 2vh;
   left: 20vw;

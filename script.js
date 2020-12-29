@@ -1,11 +1,5 @@
 /** @type {HTMLCanvasElement} */
 const form = document.querySelector("form");
-const angle = document.getElementById("angle");
-const step = document.getElementById("step");
-const scale = document.getElementById("scale");
-const limit = document.getElementById("limit");
-const draw = document.getElementById("draw");
-const lazyrabbit = document.getElementById("lazyrabbit");
 const canvas = document.getElementById("canvas1");
 const ctx = canvas.getContext("2d");
 
@@ -14,14 +8,10 @@ canvas.height = window.innerHeight;
 
 ctx.globalCompositeOperation = "destination-over";
 
-let hue = Math.random() * 360;
-let number = 0;
-
-function drawFlower(flowerAngle, flowerScale, flowerStep) {
-  let angle = number * flowerAngle;
-  let radius = flowerScale * Math.sqrt(number);
-  let positionX = radius * Math.sin(angle) + canvas.width / 2;
-  let positionY = radius * Math.cos(angle) + canvas.height / 2;
+function drawFlower(number, hue, angle, scale) {
+  let radius = scale * Math.sqrt(number);
+  let positionX = radius * Math.sin(angle * number) + canvas.width / 2;
+  let positionY = radius * Math.cos(angle * number) + canvas.height / 2;
 
   ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
   ctx.strokeStyle = "black";
@@ -31,42 +21,52 @@ function drawFlower(flowerAngle, flowerScale, flowerStep) {
   ctx.closePath();
   ctx.fill();
   ctx.stroke();
-
-  number += flowerStep;
-  hue += 0.5;
 }
 
-function animate() {
-  const flowerAngle = parseFloat(angle.value);
-  const flowerScale = parseInt(scale.value);
-  const flowerStep = parseInt(step.value);
-  drawFlower(flowerAngle, flowerScale, flowerStep);
-  if (number > limit.value) return;
-  requestAnimationFrame(animate);
+// requestID has to be global for stop the animation
+let requestID;
+function runAnimation(angle, step, scale, limit) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let hue = Math.random() * 360;
+  let number = 0;
+  if (requestID) cancelAnimationFrame(requestID);
+  function animate() {
+    drawFlower(number, hue, angle, scale);
+    number += step;
+    hue += 0.5;
+    if (number > limit) return;
+    requestID = requestAnimationFrame(animate);
+  }
+  animate();
 }
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  number = 0;
-  animate();
+  const [angle, step, scale, limit] = e.target.elements;
+  const values = [angle, step, scale, limit].map((el) => parseFloat(el.value));
+  runAnimation(...values);
 });
 
 // Easter egg
-function randomFlower() {
+const toastBox = document.getElementById("toast-box");
+const lazyrabbit = document.getElementById("lazyrabbit");
+
+function setRandomFlower() {
+  const [angle, step, scale, limit] = form.elements;
   angle.value = (Math.random() * (0.1 - 10) + 10).toFixed(1);
   step.value = Math.floor(Math.random() * 10) + 1;
   scale.value = Math.floor(Math.random() * (15 - 5)) + 5;
   limit.value = Math.floor(Math.random() * (350 - 150)) + 150;
-  draw.click();
+  const values = [angle, step, scale, limit].map((el) => parseFloat(el.value));
+  runAnimation(...values);
 }
 
 const toast = {
   timer: null,
 
   show: function (message) {
-    document.getElementById("toast-box").innerHTML = message;
-    document.getElementById("toast-box").style.display = "block";
+    toastBox.innerText = message;
+    toastBox.classList.remove("hidden");
 
     if (toast.timer != null) {
       clearTimeout(toast.timer);
@@ -77,7 +77,7 @@ const toast = {
   },
 
   hide: function () {
-    document.getElementById("toast-box").style.display = "none";
+    toastBox.classList.add("hidden");
     clearTimeout(toast.timer);
     toast.timer = null;
   },
@@ -87,14 +87,15 @@ lazyrabbit.addEventListener(
   "click",
   () => {
     toast.show("Random Mode unlocked!");
+    const draw = document.getElementsByName("draw")[0];
     setTimeout(() => {
       draw.insertAdjacentHTML(
         "afterend",
-        "<hr><input type='submit' value='Random Mode' id='random'>"
+        "<hr><input type='button' value='Random Mode' name='random'>"
       );
-      const random = document.getElementById("random");
-      random.addEventListener("click", randomFlower);
-      lazyrabbit.style.display = "none";
+      const random = document.getElementsByName("random")[0];
+      random.addEventListener("click", setRandomFlower);
+      lazyrabbit.classList.add("hidden");
     }, 1500);
   },
   { once: true }

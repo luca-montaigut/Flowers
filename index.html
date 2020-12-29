@@ -7,21 +7,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="toast-box"></div>
+  <div id="toast-box" class="hidden"></div>
   <main>
     <h1>Flowers</h1>
     <p>Choose the settings to draw your Fibonnaci flower.</p>
     <p>Tiny variations can completely changes the pattern.</p>
     <form action="">
       <label for="angle">Angle</label>
-      <input type="number" name="angle" value="0.5" step="0.1" id="angle">
+      <input type="number" value="0.5" name="angle" step="0.1">
       <label for="angle">Step</label>
-      <input type="number" name="numberStep" value="1" id="step">
+      <input type="number" value="1" name="step">
       <label for="scale">Scale</label>
-      <input type="number" name="scale" value="10" id="scale">
+      <input type="number" value="10" name="scale">
       <label for="scale">Limit</label>
-      <input type="number" name="limit" value="200" id="limit">
-      <input type="submit" value="Draw!" id="draw">
+      <input type="number" value="200" name="limit">
+      <input type="submit" value="Draw!" name="draw">
     </form>
     <footer>
       <svg id="lazyrabbit" xmlns="http://www.w3.org/2000/svg" viewBox="-177 269.9 255.1 255.1"><style type="text/css">  
